@@ -30,18 +30,20 @@ object Competition extends App {
   val locals = Map("Artem" -> 6, "Sergey" -> 5, "Anton" -> 2, "Vladimir" -> "2", "Alexander" -> 4D)
   val foreigners = Map[String, Int]("John" -> 3, "James" -> 1, "Tom" -> 2, "Dick" -> 5, "Eric" -> 6)
 
-  //  val results = for (l <- locals;
-  //                     ???) {
-  //    val localName = l._1
-  //    val localValue = l._2
-  //    ???
-  //  }
+  val results = for ((l_name, l_score: Int) <- locals;
+                     (f_name, f_score: Int) <- foreigners
+  ) yield {
+    l_name + " vs " + f_name -> l_score - f_score
+  }
 
-  //  var finalResult = 0
-  //  for (r <- results) {
-  //    if (???) finalResult = finalResult + 1
-  //    else ???
-  //  }
+  var finalResult = 0
+  for ((title, r: Int) <- results) {
+    if (r > 0) finalResult += 1
+    else finalResult -= 1
+  }
 
-  print("Победила дружба")
+  if (finalResult > 0) println("Наша взяла")
+  else if (finalResult < 0) println("Продули")
+  else println("Победила дружба")
+
 }
