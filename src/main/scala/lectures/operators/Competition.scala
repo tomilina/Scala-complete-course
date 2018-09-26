@@ -33,7 +33,7 @@ object Competition extends App {
   val results = for ((l_name, l_score: Int) <- locals;
                      (f_name, f_score: Int) <- foreigners
   ) yield {
-    l_name + " vs " + f_name -> l_score - f_score
+    l_name + " vs " + f_name -> (l_score - f_score)
   }
 
   var finalResult = 0
