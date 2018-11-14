@@ -12,9 +12,9 @@ object MergeSortImpl extends App {
       (left, right) match {
         case (Nil, _) => right
         case (_, Nil) => left
-        case (left_head :: left_tail, right_head :: right_tail) =>
-          if (left_head < right_head) left_head +: merge(left_tail, right)
-          else right_head +: merge(left, right_tail)
+        case (l :: lt, r :: rt) =>
+          if (l < r) l +: merge(lt, right)
+          else r +: merge(left, rt)
       }
 
     val n = data.length / 2
