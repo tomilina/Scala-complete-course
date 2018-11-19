@@ -1,5 +1,4 @@
 package lectures.collections
-
 import scala.util.Random
 
 /**
@@ -8,7 +7,7 @@ import scala.util.Random
   * Для успешного завершения задания вы должны реализовать метод businessLogic в объекте OptionVsNPE
   * Этот метод должен делать следующее:
   * * * * * Получить и распечатать результат или, если была ошибка ResourceException,
-  *         распечатать "Try again with new resource" и повторить все заново
+  * распечатать "Try again with new resource" и повторить все заново
   * * * * * Получить ресурс через ResourceProducer
   * * * * * Если ресурс не получен, кидать ResourceException (throw new ResourceException)
   * * * * * Если ресурс удачно получен, на его основе получить Connection
@@ -30,7 +29,6 @@ class ResourceException extends Exception("Ресурс не отвечает")
 
 trait FailUtil {
   val failRate: Double
-
   def timeToFail = Math.random() > failRate
 }
 
@@ -42,30 +40,39 @@ object ResourceProducer extends FailUtil {
 
 object ConnectionProducer extends FailUtil {
   val failRate: Double = 0.5
-
   def produce(resource: Resource) = if (timeToFail) null else Connection(resource)
-
   def result(connection: Connection) = if (timeToFail) null else connection.resource.name
 }
 
 case class Connection(resource: Resource) {
-  private val defaultResult = "something went wrong!"
-
-  //ConnectionProducer.result(this)
-  def result(): String = ???
+  private val defaultResult = "something went wrong!" //ConnectionProducer.result(this)
+  def result(): String = {
+    ConnectionProducer.result(this) match {
+      case Some(result) => result
+      case None => this.defaultResult
+    }
+  }
 }
 
 case class Resource(name: String)
 
 object OptionVsNPE extends App {
-
   def businessLogic: String = try {
     // ResourceProducer
-    val result: String = ???
+    val result: String = ResourceProducer.produce match {
+      case Some(resource) => Connection(resource) match {
+        case Some(connection) => connection.result()
+        case None => Connection(resource)
+      }
+      case None => throw new ResourceException
+    }
     println(result)
     result
   } catch {
-    case e: ResourceException => ???
+    case e: ResourceException => {
+      println("Try again with new resource")
+      businessLogic
+    }
   }
 
   businessLogic
